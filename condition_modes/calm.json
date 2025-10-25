@@ -1,0 +1,11 @@
+{
+  "name": "Calm Sailing",
+  "tick_rate_hz": 10,
+  "sensors": {
+    "depth": {
+      "mean_depth_m": 15,
+      "noise_m": 0.5,     
+      "refresh_rate_hz": 0.5
+    }
+  }
+}
