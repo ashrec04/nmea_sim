@@ -16,7 +16,8 @@ async def main():
         DepthSensor(config["sensors"]["depth"])
     ]
 
-    print(DepthSensor.Update())
+    scheduler = Scheduler(config["tick_rate_hz"], sensors)
+    await scheduler.run(duration_s=10)
 
 
 if __name__ == "__main__":
