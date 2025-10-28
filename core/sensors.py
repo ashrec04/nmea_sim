@@ -1,6 +1,4 @@
 import random
-import time
-import math
 
 #Basic Sensor class for subs to inherit
 class SensorBase:
@@ -20,14 +18,26 @@ class SensorBase:
 
 
 class DepthSensor(SensorBase):
-
     def __init__(self, config):
         super().__init__("depth", config["refresh_rate_hz"])
         self.mean_depth = config["mean_depth_m"]
-        self.noise = config["noise_m"]
+        self.change = config["change_m"]
 
-    #Get new random depth and update latest refresh
     def Update(self, now):
         self.last_update = now
-        depth = self.mean_depth + random.uniform(-self.noise, self.noise)
+        depth = self.mean_depth + random.uniform(-self.change, self.change)
         return {"depth_m": round(depth, 2)}
+    
+
+class Anemometer(SensorBase):
+    def __init__(self, config):
+        super().__init__("anemometer", config["refresh_rate_hz"])
+        self.mean_speed = config["mean_speed_kn"]
+        self.speed_change = config["speed_change_kn"]
+        self.mean_direction = config["mean_direction_deg"]
+        self.direction_change = config["direction_change_deg"]
+
+    def Update(self, now):
+        self.last_update = now
+        speed = self.mean_speed + random.uniform(-self.speed_change, self.speed_change)
+        return {"wind_speed_kn": round(speed, 2)}
