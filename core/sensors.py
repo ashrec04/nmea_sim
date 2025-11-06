@@ -42,3 +42,13 @@ class Anemometer(SensorBase):
         self.last_update = now
         anemometer_values = [round(self.mean_speed + self.speed_variation * np.sin(now),1), round(self.mean_direction + self.direction_variation * np.sin(now))]
         return anemometer_values
+
+class SpeedOverGround(SensorBase):
+    def __init__(self, config):
+        super().__init__("sog", config["refresh_rate_hz"])
+        self.mean_speed = config["mean_speed_kn"]
+        self.speed_variation = config["speed_variation_kn"]
+
+    def Update(self, now):
+        self.last_update = now
+        return round((self.mean_speed + self.speed_variation * np.sin(now)), 1)

@@ -18,7 +18,7 @@ class Scheduler:
             for sensor in self.sensors:
                 if sensor.ShouldUpdate(now):
                     reading = sensor.Update(now)
-                    print(sensor, " : ", reading)
+                    print(sensor.name, " : ", reading)
             
 
             sim_tick += 1

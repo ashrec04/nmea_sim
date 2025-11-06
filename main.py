@@ -1,7 +1,7 @@
 import asyncio
 import json
 
-from core.sensors import DepthSensor, Anemometer
+from core.sensors import DepthSensor, Anemometer, SpeedOverGround
 from core.scheduler import Scheduler
 
 def LoadConditions(path):
@@ -14,7 +14,8 @@ async def main():
     
     sensors = [
         DepthSensor(config["sensors"]["depth"]),
-        Anemometer(config["sensors"]["anemometer"])
+        Anemometer(config["sensors"]["anemometer"]),
+        SpeedOverGround(config["sensors"]["speed over ground"])
     ]
 
     scheduler = Scheduler(config["tick_rate_hz"], sensors)
