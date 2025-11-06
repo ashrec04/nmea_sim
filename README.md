@@ -9,6 +9,7 @@ time
 
 ## File Structure
 ```
+nmea_sim
 ├── main.py
 ├── README.md
 ├── tree.txt
