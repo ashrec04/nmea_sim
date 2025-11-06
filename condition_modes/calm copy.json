@@ -4,14 +4,14 @@
   "sensors": {
     "depth": {
       "mean_depth_m": 15,
-      "variation_m": 0.5,     
+      "change_m": 0.5,     
       "refresh_rate_hz": 1
     },
     "anemometer": {
       "mean_speed_kn": 4,
-      "speed_variation_kn": 1,
+      "speed_change_kn": 0.5,
       "mean_direction_deg": 90,
-      "direction_variation_deg": 3,
+      "direction_change_deg": 10,
       "refresh_rate_hz": 2
     }
   }
