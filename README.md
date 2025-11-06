@@ -8,6 +8,7 @@ json
 time
 
 ## File Structure
+```
 ├── main.py
 ├── README.md
 ├── tree.txt
@@ -18,3 +19,4 @@ time
 └── core
     ├── scheduler.py
     └── sensors.py
+```
