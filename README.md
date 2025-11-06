@@ -12,11 +12,8 @@ time
 nmea_sim
 ├── main.py
 ├── README.md
-├── tree.txt
-│   
 ├── condition_modes
-│   └── calm.json
-│       
+│   └── calm.json     
 └── core
     ├── scheduler.py
     └── sensors.py
