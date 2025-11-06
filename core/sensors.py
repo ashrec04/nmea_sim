@@ -1,4 +1,3 @@
-import random
 import numpy as np
 
 #Basic Sensor class for subs to inherit
