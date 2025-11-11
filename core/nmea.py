@@ -1,55 +1,59 @@
 from nmea2000.encoder import NMEA2000Encoder, NMEA2000Message, NMEA2000Field
 from nmea2000.decoder import NMEA2000Decoder
 
-def GenMessage(sensor, reading):
-    msg_bytes = "NULL"
-    if sensor.name == "depth":
-        msg_bytes = GetWaterDepthMsg(reading)
-    else:
-        print("ERROR: Sensor type", sensor.name, " is invalid")
-    
-    return msg_bytes
+class NEMAMessage:
+    def __init__ (self):
+        #initise encoder and decoder
+        self.encoder = NMEA2000Encoder()
+        self.decoder = NMEA2000Decoder()
 
-def GetWaterDepthMsg(depth_m):
-    # Initialize encoder
-    encoder = NMEA2000Encoder()
+    def GenMessage(self, sensor, reading):
+        if sensor.name == "depth":
+            return self.GetWaterDepthMsg(float(reading))
 
-    # Data to encode: Water Depth message (PGN 128267)
-    message = NMEA2000Message(
-        PGN=128267,
-        priority=2,
-        source=1,
-        destination=255,
-        fields=[
-            NMEA2000Field(
-                id="sid",
-                raw_value=0,
-            ),
-            NMEA2000Field(
-                id="depth",
-                value=depth_m,
-            ),
-            NMEA2000Field(
-                id="offset",
-                raw_value=0,
-            ),
-            NMEA2000Field(
-                id="range",
-                raw_value=100,
-            )
-        ]
-    )
+        print("ERROR: Sensor type", sensor.name, "is invalid")
+        return []
 
-    msg_bytes = encoder.encode_ebyte(message)
-    print("message: ", msg_bytes)
-    return msg_bytes
+    def GetWaterDepthMsg(self, depth_m):
+        # Data to encode: Water Depth message (PGN 128267)
+        message = NMEA2000Message(
+            PGN=128267,
+            priority=2,
+            source=1,
+            destination=255,
+            fields=[
+                NMEA2000Field(
+                    id="sid",
+                    raw_value=0,
+                ),
+                NMEA2000Field(
+                    id="depth",
+                    value=depth_m,
+                ),
+                NMEA2000Field(
+                    id="offset",
+                    raw_value=0,
+                ),
+                NMEA2000Field(
+                    id="range",
+                    raw_value=100,
+                )
+            ]
+        )
 
-def CheckMessage(msg_bytes):
-    # Initialize decoder
-    decoder = NMEA2000Decoder()
+        msg_bytes = self.encoder.encode_ebyte(message)
+        print("message: ", msg_bytes)
+        return msg_bytes
 
-    # Decode the message
-    for b in msg_bytes:
-        decoded = decoder.decode_tcp(b) or decoded
-        print(decoded.PGN, [(fld.id, fld.value) for fld in decoded.fields])
+    def DecodeMessage(self, msg_bytes):
+        # Decode the message
+        decoded = None
+        for b in msg_bytes:
+            d = self.decoder.decode_tcp(b)
+            if d != None:
+                decoded = d
+            if decoded:
+                print(decoded.PGN, [(fld.id, fld.value) for fld in decoded.fields])
+            else:
+                print("DECODE ERROR")
 

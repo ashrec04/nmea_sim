@@ -1,6 +1,6 @@
 import asyncio
 import time
-from core.nmea import GenMessage, CheckMessage
+from core.nmea import NEMAMessage
 
 class Scheduler:
     def __init__(self, tick_rate_hz, sensors):
@@ -15,12 +15,13 @@ class Scheduler:
         sim_tick = 0
 
         messages_list = []
+        n2k = NEMAMessage()
         while self.running:
             now = time.time()
             for sensor in self.sensors:
                 if sensor.ShouldUpdate(now):
                     reading = sensor.Update(now)
-                    messages_list += GenMessage(sensor, reading)
+                    messages_list += n2k.GenMessage(sensor, reading)
             
 
             sim_tick += 1
