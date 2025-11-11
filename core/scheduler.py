@@ -14,19 +14,18 @@ class Scheduler:
         start_time = time.time()
         sim_tick = 0
 
-        messages_list = []
         n2k = NEMAMessage()
         while self.running:
             now = time.time()
             for sensor in self.sensors:
                 if sensor.ShouldUpdate(now):
                     reading = sensor.Update(now)
-                    messages_list += n2k.GenMessage(sensor, reading)
+                    message = n2k.GenMessage(sensor, reading)
+                    print(n2k.DecodeMessage(message))
             
 
             sim_tick += 1
 
             await asyncio.sleep(self.tick_time_s)
             if duration_s and ((time.time() - start_time) > duration_s):
-                print(messages_list)
                 break
