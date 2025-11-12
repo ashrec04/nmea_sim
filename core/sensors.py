@@ -38,7 +38,7 @@ class DepthSensor(SensorBase):
         # r = random integer between -5 and 5
         #-------------------------------------------------------------------------#
 
-        return round((self.mean_depth + self.variation * np.sin(now) + np.sin(now*np.random.randint(low=-2, high=2))), 1)
+        return [round((self.mean_depth + self.variation * np.sin(now) + np.sin(now*np.random.randint(low=-2, high=2))), 1)]
 
 class Anemometer(SensorBase):
     def __init__(self, config):
@@ -63,4 +63,4 @@ class SpeedOverGround(SensorBase):
 
     def Update(self, now):
         self.last_update = now
-        return round(self.mean_speed + self.speed_variation * np.sin(now) + np.sin(now*np.random.randint(low=-5, high=5)), 1)
+        return [round(self.mean_speed + self.speed_variation * np.sin(now) + np.sin(now*np.random.randint(low=-5, high=5)), 1)]
