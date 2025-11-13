@@ -6,6 +6,7 @@ numpy
 asyncio
 json
 time
+PyQt6
 
 ## File Structure
 ```  
