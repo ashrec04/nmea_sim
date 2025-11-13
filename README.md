@@ -8,13 +8,19 @@ json
 time
 
 ## File Structure
-```
+```  
 nmea_sim
+├── .gitattributes
+├── .gitignore
 ├── main.py
 ├── README.md
 ├── condition_modes
 │   └── calm.json     
-└── core
-    ├── scheduler.py
-    └── sensors.py
+├── core
+│   ├── nmea.py
+│   ├── scheduler.py
+│   └── sensors.py          
+└── gui
+    ├── colour_widget.py
+    └── gui.py 
 ```
