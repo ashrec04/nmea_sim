@@ -21,7 +21,7 @@ class Scheduler:
                 if sensor.ShouldUpdate(now):
                     reading = sensor.Update(now)
                     message = n2k.GenMessage(sensor, reading)
-                    print(n2k.DecodeMessage(message))
+                    n2k.DecodeMessage(message)
             
 
             sim_tick += 1
