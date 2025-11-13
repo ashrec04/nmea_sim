@@ -83,7 +83,7 @@ class NEMAMessage:
         print("message: ", msg_bytes)
         return msg_bytes
     
-    def GetSpeedOverGroundMsg(self, speed):
+    def GetSpeedOverGroundMsg(self, wind_data):
         # Data to encode: Speed over Ground message (PGN 130306)
         message = NMEA2000Message(
             PGN=130306,
