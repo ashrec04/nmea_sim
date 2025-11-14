@@ -3,10 +3,11 @@ import time
 from core.nmea import NEMAMessage
 
 class Scheduler:
-    def __init__(self, tick_rate_hz, sensors):
+    def __init__(self, tick_rate_hz, sensors, loop=None):
         self.tick_time_s = 1 / tick_rate_hz
         self.sensors = sensors
         self.running = False
+        self.loop = loop or asyncio.get_event_loop()
 
     #sim update loop runner 
     async def run(self, duration_s = None):

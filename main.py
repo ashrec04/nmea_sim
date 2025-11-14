@@ -1,5 +1,5 @@
 import asyncio
-import json
+from qasync import QEventLoop
 import sys
 import os
 from PyQt6.QtWidgets import QApplication
@@ -8,13 +8,7 @@ from core.sensors import DepthSensor, Anemometer, SpeedOverGround
 from core.scheduler import Scheduler
 from gui.gui import MainWindow
 
-def LoadConditions(path):
-    with open(path) as f:
-        return json.load(f)
-
-async def main():
-
-    config = LoadConditions("condition_modes/calm.json")
+def main():
 
     conditions = os.listdir('condition_modes/')
     condition_list = []
@@ -22,24 +16,18 @@ async def main():
         cond = cond[:-5]
         condition_list.append(cond)
     print(condition_list)
-    
-    sensors = [
-        DepthSensor(config["sensors"]["depth"]),
-        Anemometer(config["sensors"]["anemometer"]),
-        SpeedOverGround(config["sensors"]["speed over ground"])
-    ]
-    
+
+
     app = QApplication(sys.argv)
-    window = MainWindow(condition_list)
+    loop = QEventLoop(app) # initises the gui through asyncio
+    asyncio.set_event_loop(loop)
+
+    window = MainWindow(loop)
     window.show()
-    app.exec()
-
-    #code wont reach here until app window closed
-    #scheduler = Scheduler(config["tick_rate_hz"], sensors)
-    #await scheduler.run(duration_s=10)
-
-
+    
+    with loop:
+        loop.run_forever()
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

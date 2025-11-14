@@ -1,10 +1,20 @@
+import asyncio
+import json
+import ctypes
+
+from qasync import QEventLoop, asyncSlot
+
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QListWidget
 
+from core.sensors import DepthSensor, Anemometer, SpeedOverGround
+from core.scheduler import Scheduler
+
 
 #~~ Global Constants
 APPLICATION_NAME = "NMEA 2000 Sim"
+ICON_PATH = 'gui/resources/icon.ico'
 WINDOW_HEIGHT = 450
 WINDOW_WIDTH = 900
 LABEL_HEIGHT = 15
@@ -22,15 +32,17 @@ LOG_LABEL = "Data Log:"
 #~~
 
 
-# Subclass QMainWindow to customize your application's main window
+# Subclass QMainWindow to customise the window
 class MainWindow(QMainWindow):
 
-    def __init__(self, test):
+    def __init__(self, loop=None):
         super().__init__()
 
         self.setWindowTitle(APPLICATION_NAME)
         self.setFixedSize(QSize(WINDOW_WIDTH, WINDOW_HEIGHT))
-        self.setWindowIcon(QIcon('gui/resources/icon.ico'))
+        self.setWindowIcon(QIcon(ICON_PATH)) # set icon in window
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('nmea-sim.gui') # set icon in taskbar
+
 
         self.sim_running = False
 
@@ -40,7 +52,7 @@ class MainWindow(QMainWindow):
 
         # sim mode (left)
         layout_left.addWidget(self.AddLabel(SIMULATION_LABEL, STANDARD_WIDTH, LABEL_HEIGHT))
-        layout_left.addWidget(self.AddListWidget(test ,STANDARD_WIDTH, OPTIONS_HEIGHT))
+        layout_left.addWidget(self.AddListWidget(["one", "two", "three"] ,STANDARD_WIDTH, OPTIONS_HEIGHT))
         layout_left.addLayout(self.BuildButtonRow())
 
         layout_main.addLayout(layout_left)
@@ -54,6 +66,8 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         widget.setLayout(layout_main)
         self.setCentralWidget(widget)
+
+        self.loop = loop or asyncio.get_event_loop()
 
     def BuildButtonRow(self):
         layout_buttons = QHBoxLayout()
@@ -84,13 +98,25 @@ class MainWindow(QMainWindow):
         widget.setFixedSize(width, height)
         return widget
 
-    
-    def PlayButtonClicked(self):
+    @asyncSlot()
+    async def PlayButtonClicked(self):
         if self.sim_running == True:
             print("simulation already running")
         else:
             self.sim_running = True
             print("simulation start")
+
+            config = self.LoadConditions("condition_modes/calm.json")
+            sensors = [
+                DepthSensor(config["sensors"]["depth"]),
+                Anemometer(config["sensors"]["anemometer"]),
+                SpeedOverGround(config["sensors"]["speed over ground"])
+            ]
+
+
+            scheduler = Scheduler(config["tick_rate_hz"], sensors, self.loop)
+            await scheduler.run(duration_s=10)
+            
 
     def PauseButtonClicked(self):
         if self.sim_running == True:
@@ -107,3 +133,7 @@ class MainWindow(QMainWindow):
         else:
             self.sim_running = False
             print("simulation not running")
+
+    def LoadConditions(self, path):
+        with open(path) as f:
+            return json.load(f)
