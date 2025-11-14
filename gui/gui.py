@@ -1,6 +1,7 @@
 import sys
 
 from PyQt6.QtCore import QSize, Qt
+from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
 from colour_widget import Color
 
@@ -11,15 +12,13 @@ WINDOW_HEIGHT = 450
 WINDOW_WIDTH = 900
 
 STANDARD_WIDTH = int((WINDOW_WIDTH-100)/2)
-
-LABEL_HEIGHT = int(WINDOW_HEIGHT/9)
-
+LABEL_HEIGHT = int(10*WINDOW_HEIGHT/WINDOW_HEIGHT)
 BUTTON_HEIGHT = int((2 * WINDOW_HEIGHT)/9)
 BUTTON_WIDTH = int((WINDOW_WIDTH-100)/6)
-
 OPTIONS_HEIGHT = int((5 * WINDOW_HEIGHT)/9)
-
 LOG_HEIGHT = int((7 * WINDOW_HEIGHT)/9)
+
+
 
 #~~
 
@@ -31,6 +30,8 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle(APPLICATION_NAME)
         self.setFixedSize(QSize(WINDOW_WIDTH, WINDOW_HEIGHT))
+        self.setWindowIcon(QIcon('gui/resources/icon.ico'))
+        
 
         layout_main = QHBoxLayout()
         layout_buttons = QHBoxLayout()
