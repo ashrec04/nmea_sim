@@ -18,7 +18,10 @@ BUTTON_WIDTH = int((WINDOW_WIDTH-100)/6)
 OPTIONS_HEIGHT = int((5 * WINDOW_HEIGHT)/9)
 LOG_HEIGHT = int((7 * WINDOW_HEIGHT)/9)
 
+BUTTON_NAMES = ["Play", "Pause", "Restart"]
+SIMULATION_LABEL = "Simulation Modes:"
 
+LOG_LABEL = "Data Log:"
 
 #~~
 
@@ -34,48 +37,26 @@ class MainWindow(QMainWindow):
         
 
         layout_main = QHBoxLayout()
-        layout_buttons = QHBoxLayout()
         layout_left = QVBoxLayout()
         layout_right = QVBoxLayout()
 
-        # pause, play buttons
-        play_button = QPushButton("Play")
-        play_button.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
-
-        pause_button = QPushButton("Pause")
-        pause_button.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
-
-        restart_button = QPushButton("Restart")
-        restart_button.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
-
-        layout_buttons.addWidget(play_button)
-        layout_buttons.addWidget(pause_button)
-        layout_buttons.addWidget(restart_button)
-
-
-        # sim mode side
-        # title
-        sim_title = QLabel("Simulation Mode:")
-        sim_title.setFixedSize(STANDARD_WIDTH, LABEL_HEIGHT) 
+        # sim mode (left)
 
         # sim mode options
         sim_options = Color("purple")
         sim_options.setFixedSize(STANDARD_WIDTH, OPTIONS_HEIGHT) 
         
-        layout_left.addWidget(sim_title)
+        layout_left.addWidget(self.AddLabel(SIMULATION_LABEL, STANDARD_WIDTH, LABEL_HEIGHT))
         layout_left.addWidget(sim_options)
-        layout_left.addLayout(layout_buttons)
+        layout_left.addLayout(self.BuildButtonRow())
 
         layout_main.addLayout(layout_left)
 
         # data logger
-        log_title = QLabel("Data Log:")
-        log_title.setFixedSize(STANDARD_WIDTH, LABEL_HEIGHT)
-
         log_box = Color("purple")
         log_box.setFixedSize(STANDARD_WIDTH, LOG_HEIGHT)
 
-        layout_right.addWidget(log_title)
+        layout_right.addWidget(self.AddLabel(LOG_LABEL, STANDARD_WIDTH, LABEL_HEIGHT))
         layout_right.addWidget(log_box)
 
         layout_main.addLayout(layout_right)
@@ -84,6 +65,18 @@ class MainWindow(QMainWindow):
         widget.setLayout(layout_main)
         self.setCentralWidget(widget)
 
+    def BuildButtonRow(self):
+        layout_buttons = QHBoxLayout()
+        for title in BUTTON_NAMES:
+            button = QPushButton(title)
+            button.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
+            layout_buttons.addWidget(button)
+        return layout_buttons
+
+    def AddLabel(self, text, width, height):
+        label = QLabel(text)
+        label.setFixedSize(width, height)
+        return label
 
 app = QApplication(sys.argv)
 
