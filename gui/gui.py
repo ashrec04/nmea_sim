@@ -1,18 +1,15 @@
-import sys
-
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton
-from colour_widget import Color
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QListWidget
 
 
 #~~ Global Constants
 APPLICATION_NAME = "NMEA 2000 Sim"
 WINDOW_HEIGHT = 450
 WINDOW_WIDTH = 900
+LABEL_HEIGHT = 15
 
-STANDARD_WIDTH = int((WINDOW_WIDTH-100)/2)
-LABEL_HEIGHT = int(10*WINDOW_HEIGHT/WINDOW_HEIGHT)
+STANDARD_WIDTH = int((WINDOW_WIDTH-100)/2)  # Width of the two main columns
 BUTTON_HEIGHT = int((2 * WINDOW_HEIGHT)/9)
 BUTTON_WIDTH = int((WINDOW_WIDTH-100)/6)
 OPTIONS_HEIGHT = int((5 * WINDOW_HEIGHT)/9)
@@ -20,44 +17,37 @@ LOG_HEIGHT = int((7 * WINDOW_HEIGHT)/9)
 
 BUTTON_NAMES = ["Play", "Pause", "Restart"]
 SIMULATION_LABEL = "Simulation Modes:"
-
 LOG_LABEL = "Data Log:"
 
 #~~
 
+
 # Subclass QMainWindow to customize your application's main window
 class MainWindow(QMainWindow):
 
-    def __init__(self):
+    def __init__(self, test):
         super().__init__()
 
         self.setWindowTitle(APPLICATION_NAME)
         self.setFixedSize(QSize(WINDOW_WIDTH, WINDOW_HEIGHT))
         self.setWindowIcon(QIcon('gui/resources/icon.ico'))
-        
+
+        self.sim_running = False
 
         layout_main = QHBoxLayout()
         layout_left = QVBoxLayout()
         layout_right = QVBoxLayout()
 
         # sim mode (left)
-
-        # sim mode options
-        sim_options = Color("purple")
-        sim_options.setFixedSize(STANDARD_WIDTH, OPTIONS_HEIGHT) 
-        
         layout_left.addWidget(self.AddLabel(SIMULATION_LABEL, STANDARD_WIDTH, LABEL_HEIGHT))
-        layout_left.addWidget(sim_options)
+        layout_left.addWidget(self.AddListWidget(test ,STANDARD_WIDTH, OPTIONS_HEIGHT))
         layout_left.addLayout(self.BuildButtonRow())
 
         layout_main.addLayout(layout_left)
 
-        # data logger
-        log_box = Color("purple")
-        log_box.setFixedSize(STANDARD_WIDTH, LOG_HEIGHT)
-
+        # data log (right)
         layout_right.addWidget(self.AddLabel(LOG_LABEL, STANDARD_WIDTH, LABEL_HEIGHT))
-        layout_right.addWidget(log_box)
+        layout_right.addWidget(self.AddLabel("THIS IS THE LOG", STANDARD_WIDTH, LOG_HEIGHT))
 
         layout_main.addLayout(layout_right)
 
@@ -67,10 +57,20 @@ class MainWindow(QMainWindow):
 
     def BuildButtonRow(self):
         layout_buttons = QHBoxLayout()
+        count = 0
         for title in BUTTON_NAMES:
             button = QPushButton(title)
             button.setFixedSize(BUTTON_WIDTH, BUTTON_HEIGHT)
+
+            if count == 0: # play
+                button.clicked.connect(self.PlayButtonClicked)
+            elif count == 1: # pause
+                button.clicked.connect(self.PauseButtonClicked)
+            else: # restart
+                button.clicked.connect(self.RestartButtonClicked)
+
             layout_buttons.addWidget(button)
+            count += 1
         return layout_buttons
 
     def AddLabel(self, text, width, height):
@@ -78,13 +78,32 @@ class MainWindow(QMainWindow):
         label.setFixedSize(width, height)
         return label
 
-app = QApplication(sys.argv)
+    def AddListWidget(self, list_options, width, height):
+        widget = QListWidget()
+        widget.addItems(list_options)
+        widget.setFixedSize(width, height)
+        return widget
 
-window = MainWindow()
-window.show()
+    
+    def PlayButtonClicked(self):
+        if self.sim_running == True:
+            print("simulation already running")
+        else:
+            self.sim_running = True
+            print("simulation start")
 
-app.exec()
+    def PauseButtonClicked(self):
+        if self.sim_running == True:
+            self.sim_running = False
+            print("simulation paused")
+        else:
+            self.sim_running = False
+            print("simulation already stopped")
 
-
-# Your application won't reach here until you exit and the event
-# loop has stopped.
+    def RestartButtonClicked(self):
+        if self.sim_running == True:
+            self.sim_running = True
+            print("simulation restarted")
+        else:
+            self.sim_running = False
+            print("simulation not running")
