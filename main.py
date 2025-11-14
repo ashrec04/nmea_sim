@@ -4,8 +4,6 @@ import sys
 import os
 from PyQt6.QtWidgets import QApplication
 
-from core.sensors import DepthSensor, Anemometer, SpeedOverGround
-from core.scheduler import Scheduler
 from gui.gui import MainWindow
 
 def main():
