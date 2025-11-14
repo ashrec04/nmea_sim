@@ -1,0 +1,26 @@
+{
+  "name": "Mild Sailing",
+  "tick_rate_hz": 10,
+  "sensors": {
+    "depth":
+    {
+      "mean_depth_m": 15,
+      "variation_m": 1,     
+      "refresh_rate_hz": 1
+    },
+    "anemometer":
+    {
+      "mean_speed_kn": 8,
+      "speed_variation_kn": 3,
+      "mean_direction_deg": 90,
+      "direction_variation_deg": 10,
+      "refresh_rate_hz": 2
+    },
+    "speed over ground":
+    {
+      "mean_speed_kn": 6,
+      "speed_variation_kn": 0.5,
+      "refresh_rate_hz": 2
+    }
+  }
+}
