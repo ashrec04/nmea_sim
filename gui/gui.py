@@ -137,6 +137,7 @@ class MainWindow(QMainWindow):
 
             self.scheduler = Scheduler(config["tick_rate_hz"], sensors, self.loop, self.log_queue)
             try:
+                self.ResetLogLabel()
                 self.sim_running = True
                 await self.scheduler.Run(duration_s=10)
             except:
@@ -158,6 +159,9 @@ class MainWindow(QMainWindow):
             message = await self.log_queue.get()
             self.log_label.setText((self.log_label.text() + "\n" + message).strip())
             self.log_queue.task_done()
+    
+    def ResetLogLabel(self):
+        self.log_label.setText("")
 
 
 

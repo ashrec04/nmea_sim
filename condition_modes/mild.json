@@ -4,7 +4,7 @@
   "sensors": {
     "depth":
     {
-      "mean_depth_m": 15,
+      "mean_depth_m": 20,
       "variation_m": 1,     
       "refresh_rate_hz": 1
     },
