@@ -142,7 +142,7 @@ class MainWindow(QMainWindow):
                 await self.scheduler.Run(duration_s=10)
             except:
                 self.sim_running = False
-                print("ERROR: scheduler unable to start")
+                print("ERROR: scheduler has encountered an issue")
             
     @asyncSlot()
     async def StopButtonClicked(self):
