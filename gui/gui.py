@@ -25,7 +25,7 @@ BUTTON_WIDTH = int((WINDOW_WIDTH-100)/6)
 OPTIONS_HEIGHT = int((5 * WINDOW_HEIGHT)/9)
 LOG_HEIGHT = int((7 * WINDOW_HEIGHT)/9)
 
-BUTTON_NAMES = ["Play", "Pause", "Restart"]
+BUTTON_NAMES = ["Start", "Stop"]
 SIMULATION_LABEL = "Simulation Modes:"
 LOG_LABEL = "Data Log:"
 
@@ -68,6 +68,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(widget)
 
         self.loop = loop or asyncio.get_event_loop()
+        self.scheduler = None
 
     def BuildButtonRow(self):
         layout_buttons = QHBoxLayout()
@@ -79,7 +80,7 @@ class MainWindow(QMainWindow):
             if count == 0: # play
                 button.clicked.connect(self.PlayButtonClicked)
             elif count == 1: # pause
-                button.clicked.connect(self.PauseButtonClicked)
+                button.clicked.connect(self.StopButtonClicked)
             else: # restart
                 button.clicked.connect(self.RestartButtonClicked)
 
@@ -103,37 +104,31 @@ class MainWindow(QMainWindow):
         if self.sim_running == True:
             print("simulation already running")
         else:
-            self.sim_running = True
-            print("simulation start")
-
-            config = self.LoadConditions("condition_modes/calm.json")
+            config = LoadConditions("condition_modes/calm.json")
             sensors = [
                 DepthSensor(config["sensors"]["depth"]),
                 Anemometer(config["sensors"]["anemometer"]),
                 SpeedOverGround(config["sensors"]["speed over ground"])
             ]
 
-
-            scheduler = Scheduler(config["tick_rate_hz"], sensors, self.loop)
-            await scheduler.run(duration_s=10)
+            self.scheduler = Scheduler(config["tick_rate_hz"], sensors, self.loop)
+            try:
+                self.sim_running = True
+                await self.scheduler.Run(duration_s=10)
+            except:
+                self.sim_running = False
+                print("ERROR: scheduler unable to start")
             
-
-    def PauseButtonClicked(self):
+    @asyncSlot()
+    async def StopButtonClicked(self):
         if self.sim_running == True:
+            await self.scheduler.Stop()
             self.sim_running = False
-            print("simulation paused")
+            print("simulation stopped")
         else:
             self.sim_running = False
             print("simulation already stopped")
 
-    def RestartButtonClicked(self):
-        if self.sim_running == True:
-            self.sim_running = True
-            print("simulation restarted")
-        else:
-            self.sim_running = False
-            print("simulation not running")
-
-    def LoadConditions(self, path):
-        with open(path) as f:
-            return json.load(f)
+def LoadConditions(path):
+    with open(path) as f:
+        return json.load(f)

@@ -7,11 +7,16 @@ class Scheduler:
         self.tick_time_s = 1 / tick_rate_hz
         self.sensors = sensors
         self.running = False
+        self.sim_started = False
         self.loop = loop or asyncio.get_event_loop()
 
-    #sim update loop runner 
-    async def run(self, duration_s = None):
-        self.running = True
+    def SetRun(self):
+        if not self.sim_started:
+            self.sim_started = True
+            self.running = True
+    #initise run
+    async def Run(self, duration_s = None):
+        self.SetRun()
         start_time = time.time()
         sim_tick = 0
 
@@ -30,3 +35,7 @@ class Scheduler:
             await asyncio.sleep(self.tick_time_s)
             if duration_s and ((time.time() - start_time) > duration_s):
                 break
+    
+    async def Stop(self):
+        self.running = False
+        self.sim_started = False
