@@ -46,7 +46,6 @@ class NEMAMessage:
         )
 
         msg_bytes = self.encoder.encode_ebyte(message)
-        print("message: ", msg_bytes)
         return msg_bytes
 
     def GetAnemometerMsg(self, wind_data):
@@ -80,7 +79,6 @@ class NEMAMessage:
         )
 
         msg_bytes = self.encoder.encode_ebyte(message)
-        print("message: ", msg_bytes)
         return msg_bytes
     
     def GetSpeedOverGroundMsg(self, wind_data):
@@ -115,7 +113,6 @@ class NEMAMessage:
         )
 
         msg_bytes = self.encoder.encode_ebyte(message)
-        print("message: ", msg_bytes)
         return msg_bytes
      
     def DecodeMessage(self, msg_bytes):
@@ -123,10 +120,7 @@ class NEMAMessage:
         decoded = None
         for b in msg_bytes:
             d = self.decoder.decode_tcp(b)
-            if d != None:
+            if d:
                 decoded = d
-            if decoded:
-                print(decoded.PGN, [(fld.id, fld.value) for fld in decoded.fields])
-            else:
-                print("DECODE ERROR")
+        return decoded
 

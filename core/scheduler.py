@@ -3,12 +3,13 @@ import time
 from core.nmea import NEMAMessage
 
 class Scheduler:
-    def __init__(self, tick_rate_hz, sensors, loop=None):
+    def __init__(self, tick_rate_hz, sensors, loop = None, log_queue = None):
         self.tick_time_s = 1 / tick_rate_hz
         self.sensors = sensors
         self.running = False
         self.sim_started = False
         self.loop = loop or asyncio.get_event_loop()
+        self.log_queue = log_queue
 
     def SetRun(self):
         if not self.sim_started:
@@ -27,7 +28,10 @@ class Scheduler:
                 if sensor.ShouldUpdate(now):
                     reading = sensor.Update(now)
                     message = n2k.GenMessage(sensor, reading)
-                    n2k.DecodeMessage(message)
+                    decoded_message = n2k.DecodeMessage(message)
+                    if message and self.log_queue:
+                        entry = f"PGN {decoded_message.PGN}: {[(fld.id, fld.value) for fld in decoded_message.fields]}"
+                        await self.log_queue.put(entry)
             
 
             sim_tick += 1

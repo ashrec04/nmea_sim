@@ -6,7 +6,7 @@ from qasync import QEventLoop, asyncSlot
 
 from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QListWidget
+from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QListWidget, QScrollArea
 
 from core.sensors import DepthSensor, Anemometer, SpeedOverGround
 from core.scheduler import Scheduler
@@ -16,21 +16,22 @@ from core.scheduler import Scheduler
 APPLICATION_NAME = "NMEA 2000 Sim"
 ICON_PATH = 'gui/resources/icon.ico'
 WINDOW_HEIGHT = 450
-WINDOW_WIDTH = 900
+WINDOW_WIDTH = 1200
 LABEL_HEIGHT = 15
+SCROLL_BAR_WIDTH = 10
 
-STANDARD_WIDTH = int((WINDOW_WIDTH-100)/2)  # Width of the two main columns
+SIM_WIDTH = int((WINDOW_WIDTH-100)/3)  # Width of the sim column
+LOG_WIDTH = int(2*(WINDOW_WIDTH-100)/3)  # Width of the log column
 BUTTON_HEIGHT = int((2 * WINDOW_HEIGHT)/9)
 BUTTON_WIDTH = int((WINDOW_WIDTH-100)/6)
 OPTIONS_HEIGHT = int((5 * WINDOW_HEIGHT)/9)
 LOG_HEIGHT = int((7 * WINDOW_HEIGHT)/9)
 
 BUTTON_NAMES = ["Start", "Stop"]
-SIMULATION_LABEL = "Simulation Modes:"
-LOG_LABEL = "Data Log:"
+SIMULATION_LABEL_TITLE = "Simulation Modes:"
+LOG_LABEL_TITLE = "Data Log:"
 
 #~~
-
 
 # Subclass QMainWindow to customise the window
 class MainWindow(QMainWindow):
@@ -38,36 +39,50 @@ class MainWindow(QMainWindow):
     def __init__(self, loop=None):
         super().__init__()
 
+        # setup app window
         self.setWindowTitle(APPLICATION_NAME)
         self.setFixedSize(QSize(WINDOW_WIDTH, WINDOW_HEIGHT))
         self.setWindowIcon(QIcon(ICON_PATH)) # set icon in window
         ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID('nmea-sim.gui') # set icon in taskbar
+        # 
 
+        self.sim_running = False # TODO: make redundant
 
-        self.sim_running = False
-
+        # three widgets for app window
         layout_main = QHBoxLayout()
         layout_left = QVBoxLayout()
         layout_right = QVBoxLayout()
+        #
 
-        # sim mode (left)
-        layout_left.addWidget(self.AddLabel(SIMULATION_LABEL, STANDARD_WIDTH, LABEL_HEIGHT))
-        layout_left.addWidget(self.AddListWidget(["one", "two", "three"] ,STANDARD_WIDTH, OPTIONS_HEIGHT))
+        # sim mode widgets (left)
+        layout_left.addWidget(self.AddLabel(SIMULATION_LABEL_TITLE, SIM_WIDTH, LABEL_HEIGHT))
+        layout_left.addWidget(self.AddListWidget(["one", "two", "three"] ,SIM_WIDTH, OPTIONS_HEIGHT))
         layout_left.addLayout(self.BuildButtonRow())
 
         layout_main.addLayout(layout_left)
+        #
 
-        # data log (right)
-        layout_right.addWidget(self.AddLabel(LOG_LABEL, STANDARD_WIDTH, LABEL_HEIGHT))
-        layout_right.addWidget(self.AddLabel("THIS IS THE LOG", STANDARD_WIDTH, LOG_HEIGHT))
+        # data log widgets (right)
+        layout_right.addWidget(self.AddLabel(LOG_LABEL_TITLE, LOG_WIDTH, LABEL_HEIGHT))
 
+        self.log_label = self.AddLabel("", LOG_WIDTH)
+
+        scroll = QScrollArea() # scroll bar for data log
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        scroll.setWidgetResizable(True)
+        scroll.setWidget(self.log_label)
+        layout_right.addWidget(scroll)
+        #
         layout_main.addLayout(layout_right)
 
         widget = QWidget()
         widget.setLayout(layout_main)
         self.setCentralWidget(widget)
+        
 
         self.loop = loop or asyncio.get_event_loop()
+        self.log_queue = asyncio.Queue()
+        self.loop.create_task(self.UpdateLogLabel())
         self.scheduler = None
 
     def BuildButtonRow(self):
@@ -88,9 +103,12 @@ class MainWindow(QMainWindow):
             count += 1
         return layout_buttons
 
-    def AddLabel(self, text, width, height):
+    def AddLabel(self, text, width, height=None):
         label = QLabel(text)
-        label.setFixedSize(width, height)
+        if height:
+            label.setFixedSize(width, height)
+        else:
+            label.setFixedWidth(LOG_WIDTH)
         return label
 
     def AddListWidget(self, list_options, width, height):
@@ -111,7 +129,7 @@ class MainWindow(QMainWindow):
                 SpeedOverGround(config["sensors"]["speed over ground"])
             ]
 
-            self.scheduler = Scheduler(config["tick_rate_hz"], sensors, self.loop)
+            self.scheduler = Scheduler(config["tick_rate_hz"], sensors, self.loop, self.log_queue)
             try:
                 self.sim_running = True
                 await self.scheduler.Run(duration_s=10)
@@ -128,6 +146,13 @@ class MainWindow(QMainWindow):
         else:
             self.sim_running = False
             print("simulation already stopped")
+
+
+    async def UpdateLogLabel(self):
+        while True:
+            message = await self.log_queue.get()
+            self.log_label.setText((self.log_label.text() + "\n" + message).strip())
+            self.log_queue.task_done()
 
 def LoadConditions(path):
     with open(path) as f:
