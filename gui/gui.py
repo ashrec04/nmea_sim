@@ -36,8 +36,10 @@ LOG_LABEL_TITLE = "Data Log:"
 # Subclass QMainWindow to customise the window
 class MainWindow(QMainWindow):
 
-    def __init__(self, loop=None):
+    def __init__(self, condition_list, loop=None):
         super().__init__()
+
+        self.mode_chosen = None
 
         # setup app window
         self.setWindowTitle(APPLICATION_NAME)
@@ -56,7 +58,7 @@ class MainWindow(QMainWindow):
 
         # sim mode widgets (left)
         layout_left.addWidget(self.AddLabel(SIMULATION_LABEL_TITLE, SIM_WIDTH, LABEL_HEIGHT))
-        layout_left.addWidget(self.AddListWidget(["one", "two", "three"] ,SIM_WIDTH, OPTIONS_HEIGHT))
+        layout_left.addWidget(self.AddListWidget(condition_list ,SIM_WIDTH, OPTIONS_HEIGHT))
         layout_left.addLayout(self.BuildButtonRow())
 
         layout_main.addLayout(layout_left)
@@ -78,8 +80,8 @@ class MainWindow(QMainWindow):
         widget = QWidget()
         widget.setLayout(layout_main)
         self.setCentralWidget(widget)
-        
 
+        
         self.loop = loop or asyncio.get_event_loop()
         self.log_queue = asyncio.Queue()
         self.loop.create_task(self.UpdateLogLabel())
@@ -115,14 +117,18 @@ class MainWindow(QMainWindow):
         widget = QListWidget()
         widget.addItems(list_options)
         widget.setFixedSize(width, height)
+        widget.currentItemChanged.connect(self.ModeChosen)
         return widget
+
+    def ModeChosen(self, m):
+        self.mode_chosen = m.text()
 
     @asyncSlot()
     async def PlayButtonClicked(self):
         if self.sim_running == True:
             print("simulation already running")
         else:
-            config = LoadConditions("condition_modes/calm.json")
+            config = LoadConditions(self.mode_chosen)
             sensors = [
                 DepthSensor(config["sensors"]["depth"]),
                 Anemometer(config["sensors"]["anemometer"]),
@@ -147,13 +153,16 @@ class MainWindow(QMainWindow):
             self.sim_running = False
             print("simulation already stopped")
 
-
     async def UpdateLogLabel(self):
         while True:
             message = await self.log_queue.get()
             self.log_label.setText((self.log_label.text() + "\n" + message).strip())
             self.log_queue.task_done()
 
-def LoadConditions(path):
+
+
+def LoadConditions(mode):
+    path = "condition_modes/" + mode + ".json"
+    print(path)
     with open(path) as f:
         return json.load(f)

@@ -13,14 +13,13 @@ def main():
     for cond in conditions:
         cond = cond[:-5]
         condition_list.append(cond)
-    print(condition_list)
 
 
     app = QApplication(sys.argv)
     loop = QEventLoop(app) # initises the gui through asyncio
     asyncio.set_event_loop(loop)
 
-    window = MainWindow(loop)
+    window = MainWindow(condition_list, loop)
     window.show()
     
     with loop:
