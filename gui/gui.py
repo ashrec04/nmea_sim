@@ -140,9 +140,10 @@ class MainWindow(QMainWindow):
                 self.ResetLogLabel()
                 self.sim_running = True
                 await self.scheduler.Run(duration_s=10)
-            except:
+                
+            except Exception as e:
                 self.sim_running = False
-                print("ERROR: scheduler has encountered an issue")
+                print("ERROR: scheduler has encountered an issue ", e)
             
     @asyncSlot()
     async def StopButtonClicked(self):
