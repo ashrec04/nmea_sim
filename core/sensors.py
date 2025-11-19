@@ -55,9 +55,9 @@ class Anemometer(SensorBase):
             round(self.mean_direction + self.direction_variation * np.sin(now) + np.sin(now*np.random.randint(low=-5, high=5)))
             ]
 
-class SpeedOverGround(SensorBase):
+class VesselSpeed(SensorBase):
     def __init__(self, config):
-        super().__init__("sog", config["refresh_rate_hz"])
+        super().__init__("vessel speed", config["refresh_rate_hz"])
         self.mean_speed = config["mean_speed_kn"]
         self.speed_variation = config["speed_variation_kn"]
 

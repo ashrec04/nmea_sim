@@ -8,7 +8,7 @@ from PyQt6.QtCore import QSize, Qt
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QListWidget, QScrollArea
 
-from core.sensors import DepthSensor, Anemometer, SpeedOverGround
+from core.sensors import DepthSensor, Anemometer, VesselSpeed
 from core.scheduler import Scheduler
 
 
@@ -132,7 +132,7 @@ class MainWindow(QMainWindow):
             sensors = [
                 DepthSensor(config["sensors"]["depth"]),
                 Anemometer(config["sensors"]["anemometer"]),
-                SpeedOverGround(config["sensors"]["speed over ground"])
+                VesselSpeed(config["sensors"]["vessel speed"])
             ]
 
             self.scheduler = Scheduler(config["tick_rate_hz"], sensors, self.loop, self.log_queue)

@@ -16,7 +16,7 @@
       "direction_variation_deg": 10,
       "refresh_rate_hz": 2
     },
-    "speed over ground":
+    "vessel speed":
     {
       "mean_speed_kn": 6,
       "speed_variation_kn": 0.5,
