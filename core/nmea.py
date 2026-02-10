@@ -1,6 +1,5 @@
 from nmea2000.encoder import NMEA2000Encoder, NMEA2000Message, NMEA2000Field
 from nmea2000.decoder import NMEA2000Decoder
-import itertools
 
 ''' Holds the NEMAMessage class which encodes
     data from sensors into NMEA2000 messages

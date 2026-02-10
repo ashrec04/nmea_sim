@@ -2,7 +2,6 @@ import asyncio
 import time
 from core.nmea import NEMAMessage
 from core.usb_can_adapter_v1 import UsbCanAdapter
-import can
 
 ''' Scheduler class runs the main loop of the program
     - Checks each sensor for updates
