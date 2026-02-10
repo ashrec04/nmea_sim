@@ -1,5 +1,7 @@
 import numpy as np
 
+'''Holds Sensors classes that generate data for the scheduler to send as NMEA messages'''
+
 #Basic Sensor class for subs to inherit
 class SensorBase:
     #constructor

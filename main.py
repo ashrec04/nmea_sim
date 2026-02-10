@@ -3,8 +3,10 @@ from qasync import QEventLoop
 import sys
 import os
 from PyQt6.QtWidgets import QApplication
-
 from gui.gui import MainWindow
+
+'''Main entry point for the program
+    - initiises GUI and even loop'''
 
 def main():
 
@@ -25,7 +27,6 @@ def main():
     with loop:
         loop.run_forever()
 
-    #test
 
 
 if __name__ == "__main__":
