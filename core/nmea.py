@@ -27,25 +27,6 @@ class NEMAMessage:
             print("ERROR: Sensor type", sensor.name, "is invalid")
             return []
         
-        '''
-        payload = self.encoder.encode_raw(msg)  #gets the concatenated data bytes for the PGN
-
-        #Slices msg into fast-packet frames
-        seq = next(itertools.cycle(range(8)))
-        frames = []
-        total = len(payload)
-
-        #first frame
-        chunk0 = payload[:6]
-        frames.append(bytes([(seq << 5) | 0, total, *chunk0.ljust(6, b"\xff")]))
-
-        # subsequent frames
-        rest = payload[6:]
-        for i in range(1, (len(rest) + 6) // 7 + 1):
-            chunk = rest[(i-1)*7 : i*7]
-            frames.append(bytes([(seq << 5) | i, *chunk.ljust(7, b"\xff")]))
-        '''
-        
         frames = self.encoder._encode(msg)
         return frames, msg
 
