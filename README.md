@@ -1,5 +1,7 @@
 ### nmea_sim
-nmea2000 message simulator with GUI using Python 3.14
+NMEA2000 message simulator with GUI using Python 3.14
+The program generates random data for three simulated sensors (Water Depth, Ananometer and Vessel Speed)
+Data is sent via "fast packet" NEMA2000 messages across a [Waveshare USB-CAN-A Bus](https://www.waveshare.com/wiki/USB-CAN-A) plugged into USB Port COM3
 
 ## Libraries Used
 ```
