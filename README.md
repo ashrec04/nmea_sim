@@ -9,29 +9,19 @@ json
 time
 PyQt6
 nmea2000
+qasync
 ```
+
+## Code Used
+[usb_can_adapter_v1](https://github.com/RajithaRanasinghe/Python-Class-for-Waveshare-USB-CAN-A/tree/main) the script usesed this code with a new function to enable the transfer of fast packets
 
 ## File Structure
 ```  
 nmea_sim
-├── .gitattributes
-├── .gitignore
-├── main.py
-├── README.md
-├── condition_modes
-│   └── calm.json     
-├── core
-│   ├── nmea.py
-│   ├── scheduler.py
-│   └── sensors.py          
-└── gui
-    ├── colour_widget.py
-    └── gui.py
-nmea_sim
-├──.gitattributes
-├──.gitignore
-├──main.py
-├──README.md
+├───.gitattributes
+├───.gitignore
+├───main.py
+├───README.md
 ├───condition_modes
 │   ├──calm.json
 │   └──mild.json
@@ -43,5 +33,6 @@ nmea_sim
 └───gui
     ├───gui.py
     └───resources
-        └───icon.ico
+        ├───icon.ico
+        └───mainwindow.ui
 ```
