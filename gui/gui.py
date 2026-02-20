@@ -32,6 +32,7 @@ class MainWindow(QMainWindow):
         # wire up widgets from .ui
         self.modeListWidget.addItems(condition_list)
         self.modeListWidget.currentItemChanged.connect(self.ModeChosen)
+        self.errorLabel.setText("")
         self.startButton.clicked.connect(self.PlayButtonClicked)     # start
         self.stopButton.clicked.connect(self.StopButtonClicked)   # stop
 
@@ -54,7 +55,13 @@ class MainWindow(QMainWindow):
         if self.sim_running == True:
             print("simulation already running")
         else:
-            config = LoadConditions(self.mode_chosen)
+            try:
+                config = LoadConditions(self.mode_chosen)
+                await self.UpdateErrorLabel("")
+            except:
+                await self.UpdateErrorLabel("Start Invalid:\n\nYou must choose a condition\nto start the simulation")
+
+            
             sensors = [
                 DepthSensor(config["sensors"]["depth"]),
                 Anemometer(config["sensors"]["anemometer"]),
@@ -94,6 +101,10 @@ class MainWindow(QMainWindow):
             
             self.log_queue.task_done()
     
+    async def UpdateErrorLabel(self, msg):
+        self.errorLabel.setText(msg)
+
+
     def ResetLogLabel(self):
         self.log_label.setText("")
 

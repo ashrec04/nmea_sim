@@ -18,6 +18,8 @@ def main():
 
 
     app = QApplication(sys.argv)
+    app.setStyle("Fusion")
+    
     loop = QEventLoop(app) # initises the gui through asyncio
     asyncio.set_event_loop(loop)
 
