@@ -53,13 +53,13 @@ class MainWindow(QMainWindow):
     @asyncSlot()
     async def PlayButtonClicked(self):
         if self.sim_running == True:
-            print("simulation already running")
+            return
         else:
             try:
                 config = LoadConditions(self.mode_chosen)
-                await self.UpdateErrorLabel("")
+                self.UpdateErrorLabel(f"Transmitting sensor data for\n{self.mode_chosen} conditions")
             except:
-                await self.UpdateErrorLabel("Start Invalid:\n\nYou must choose a condition\nto start the simulation")
+                self.UpdateErrorLabel("Start Invalid:\n\nYou must choose a condition\nto start the simulation")
 
             
             sensors = [
@@ -76,17 +76,16 @@ class MainWindow(QMainWindow):
                 
             except Exception as e:
                 self.sim_running = False
-                print("ERROR: scheduler has encountered an issue ", e)
+                self.UpdateErrorLabel("ERROR: scheduler has encountered an issue\n:", e)
             
     @asyncSlot()
     async def StopButtonClicked(self):
         if self.sim_running == True:
             await self.scheduler.Stop()
             self.sim_running = False
-            print("simulation stopped")
+            self.UpdateErrorLabel("Simulation Stopped")
         else:
             self.sim_running = False
-            print("simulation already stopped")
 
     async def UpdateLogLabel(self):
         while True:
@@ -100,18 +99,14 @@ class MainWindow(QMainWindow):
             )
             
             self.log_queue.task_done()
-    
-    async def UpdateErrorLabel(self, msg):
-        self.errorLabel.setText(msg)
-
 
     def ResetLogLabel(self):
         self.log_label.setText("")
 
-
+    def UpdateErrorLabel(self, msg):
+        self.errorLabel.setText(msg)
 
 def LoadConditions(mode):
     path = "condition_modes/" + mode + ".json"
-    print(path)
     with open(path) as f:
         return json.load(f)
