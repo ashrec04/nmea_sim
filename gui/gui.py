@@ -21,7 +21,7 @@ class MainWindow(QMainWindow):
     def __init__(self, condition_list, loop=None):
         super().__init__()
 
-        uic.loadUi(WINDOW_PATH, self)   # loads window as defined in mainwindow.ui file
+        uic.loadUi(WINDOW_PATH, self)   # loads window as defined in mainwindow.ui
 
         # setup app window and icon
         self.setWindowTitle(APPLICATION_NAME)

@@ -96,7 +96,8 @@ class Scheduler:
             
             # Build 29 bit CAN ID: priority (3 bits), PGN (18 bits), source (8 bits)
             can_id = ((decoded.priority & 0x7) << 26) | ((decoded.PGN & 0x3FFFF) << 8) | (decoded.source & 0xFF)
-            
+            print(can_id, " : ", frames)
+
             for frame in frames:
                 self.uca.send_data_frame(can_id, frame)  # 29-bit ID → extended frame automatically
 
