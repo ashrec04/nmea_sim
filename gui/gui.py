@@ -9,6 +9,11 @@ from PyQt6 import uic
 from core.sensors import DepthSensor, Anemometer, VesselSpeed
 from core.scheduler import Scheduler
 
+'''GUI System 
+    - Calles the schedules
+    - Controls which sensors and conditions are chosen
+'''
+
 #~~ Global Constants
 APPLICATION_NAME = "NMEA 2000 Sim"
 ICON_PATH = 'gui/resources/icon.ico'

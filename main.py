@@ -6,7 +6,8 @@ from PyQt6.QtWidgets import QApplication
 from gui.gui import MainWindow
 
 '''Main entry point for the program
-    - initiises GUI and even loop'''
+    - initiises GUI and even loop
+'''
 
 def main():
 

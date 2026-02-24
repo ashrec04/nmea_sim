@@ -1,9 +1,8 @@
 from nmea2000.encoder import NMEA2000Encoder, NMEA2000Message, NMEA2000Field
 from nmea2000.decoder import NMEA2000Decoder
 
-''' Holds the NEMAMessage class which encodes
-    data from sensors into NMEA2000 messages
-    for the scheduler to send
+''' Holds the NEMAMessage Class
+    - encodes data from sensors into NMEA2000 messages to be sent by the scheduler
 '''
 
 WATER_DEPTH_PGN = 128267
