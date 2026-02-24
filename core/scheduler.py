@@ -7,7 +7,9 @@ from core.usb_can_adapter_v1 import UsbCanAdapter
     - Checks each sensor for updates
     - Sends messages over the CAN bus
 '''
-COM_PORT = "COM3" # COM port for CAN adapter
+COM_PORTS = ["COM3","COM5"] # COM port options on pc for CAN adapter
+COM_THREE = 0
+COM_FIVE = 1
 
 class Scheduler:
     def __init__(self, tick_rate_hz, sensors, loop = None, log_queue = None):
@@ -60,13 +62,20 @@ class Scheduler:
         # Opens CAN Port #
         # ============== #
 
-        if self.uca:
+        if self.uca:    # if coms already open
             return
-        self.uca = UsbCanAdapter()  #declare CAN comm object
+        
+        self.uca = UsbCanAdapter()  # declare CAN comm obj
 
-        port = self.uca.adapter_init(COM_PORT)   # open com port
-        if port is None or not port.is_open:
-            raise RuntimeError("Failed to open", COM_PORT, "for CAN Comms")
+
+        port = self.uca.adapter_init(COM_PORTS[COM_THREE])   #try open com port COM3 first
+
+        if port is None or not port.is_open:    #try open com port COM5
+            port = self.uca.adapter_init(COM_PORTS[COM_FIVE])
+        
+        if port is None or not port.is_open:    # COM port not found, produce error
+            raise RuntimeError("Failed to open CAN Com Port")
+        
         self.uca.command_settings(speed=125000) # set baud rate (125K for NMEA2k)
 
 
