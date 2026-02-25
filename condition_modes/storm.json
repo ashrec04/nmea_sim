@@ -1,5 +1,5 @@
 {
-  "name": "Mild Sailing",
+  "name": "Stormy Conditions",
   "tick_rate_hz": 10,
   "sensors": {
     "depth":
@@ -10,10 +10,10 @@
     },
     "anemometer":
     {
-      "mean_speed_kn": 8,
-      "speed_variation_kn": 3,
+      "mean_speed_kn": 56,
+      "speed_variation_kn": 15,
       "mean_direction_deg": 90,
-      "direction_variation_deg": 10,
+      "direction_variation_deg": 30,
       "refresh_rate_hz": 2
     },
     "vessel speed":
