@@ -1,0 +1,26 @@
+{
+  "name": "Calm Wind Anchored",
+  "tick_rate_hz": 10,
+  "sensors": {
+    "depth":
+    {
+      "mean_depth_m": 15,
+      "variation_m": 0.05,     
+      "refresh_rate_hz": 1
+    },
+    "anemometer":
+    {
+      "mean_speed_kn": 3,
+      "speed_variation_kn": 1,
+      "mean_direction_deg": 0,
+      "direction_variation_deg": 90,
+      "refresh_rate_hz": 2
+    },
+    "vessel speed":
+    {
+      "mean_speed_kn": 0,
+      "speed_variation_kn": 0,
+      "refresh_rate_hz": 2
+    }
+  }
+}
