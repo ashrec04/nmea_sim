@@ -5,7 +5,7 @@
     "depth":
     {
       "mean_depth_m": 20,
-      "variation_m": 1,     
+      "variation_m": 2,     
       "refresh_rate_hz": 1
     },
     "anemometer":

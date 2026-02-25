@@ -19,7 +19,7 @@
     "vessel speed":
     {
       "mean_speed_kn": 6,
-      "speed_variation_kn": 0.5,
+      "speed_variation_kn": 1.5,
       "refresh_rate_hz": 2
     }
   }

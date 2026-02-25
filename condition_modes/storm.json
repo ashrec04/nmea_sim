@@ -4,8 +4,8 @@
   "sensors": {
     "depth":
     {
-      "mean_depth_m": 20,
-      "variation_m": 1,     
+      "mean_depth_m": 30,
+      "variation_m": 3,     
       "refresh_rate_hz": 1
     },
     "anemometer":
@@ -18,8 +18,8 @@
     },
     "vessel speed":
     {
-      "mean_speed_kn": 6,
-      "speed_variation_kn": 0.5,
+      "mean_speed_kn": 8,
+      "speed_variation_kn": 3,
       "refresh_rate_hz": 2
     }
   }
