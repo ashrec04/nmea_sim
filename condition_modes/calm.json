@@ -1,5 +1,5 @@
 {
-  "name": "Calm Sailing",
+  "name": "Calm Wind",
   "tick_rate_hz": 10,
   "sensors": {
     "depth":
@@ -10,7 +10,7 @@
     },
     "anemometer":
     {
-      "mean_speed_kn": 4,
+      "mean_speed_kn": 3,
       "speed_variation_kn": 1,
       "mean_direction_deg": 90,
       "direction_variation_deg": 3,
