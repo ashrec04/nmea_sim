@@ -10,7 +10,7 @@
     },
     "anemometer":
     {
-      "mean_speed_kn": 3,
+      "mean_speed_kn": 3.5,
       "speed_variation_kn": 1,
       "mean_direction_deg": 90,
       "direction_variation_deg": 3,
