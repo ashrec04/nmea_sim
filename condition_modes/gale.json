@@ -1,0 +1,26 @@
+{
+  "name": "Gale Winds",
+  "tick_rate_hz": 10,
+  "sensors": {
+    "depth":
+    {
+      "mean_depth_m": 20,
+      "variation_m": 1,     
+      "refresh_rate_hz": 1
+    },
+    "anemometer":
+    {
+      "mean_speed_kn": 37.5,
+      "speed_variation_kn": 10,
+      "mean_direction_deg": 90,
+      "direction_variation_deg": 20,
+      "refresh_rate_hz": 2
+    },
+    "vessel speed":
+    {
+      "mean_speed_kn": 6,
+      "speed_variation_kn": 0.5,
+      "refresh_rate_hz": 2
+    }
+  }
+}
