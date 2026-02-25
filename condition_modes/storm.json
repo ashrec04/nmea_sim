@@ -1,25 +1,25 @@
 {
-  "name": "Calm Wind",
+  "name": "Stormy Conditions",
   "tick_rate_hz": 10,
   "sensors": {
     "depth":
     {
-      "mean_depth_m": 15,
-      "variation_m": 0.5,     
+      "mean_depth_m": 30,
+      "variation_m": 3,     
       "refresh_rate_hz": 1
     },
     "anemometer":
     {
-      "mean_speed_kn": 3.5,
-      "speed_variation_kn": 1,
+      "mean_speed_kn": 56,
+      "speed_variation_kn": 15,
       "mean_direction_deg": 90,
-      "direction_variation_deg": 3,
+      "direction_variation_deg": 30,
       "refresh_rate_hz": 2
     },
     "vessel speed":
     {
-      "mean_speed_kn": 4,
-      "speed_variation_kn": 0.25,
+      "mean_speed_kn": 8,
+      "speed_variation_kn": 3,
       "refresh_rate_hz": 2
     }
   }
