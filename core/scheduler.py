@@ -1,5 +1,8 @@
 import asyncio
 import time
+import json
+import base64
+
 from core.nmea import NEMAMessage
 from core.usb_can_adapter_v1 import UsbCanAdapter
 
@@ -42,11 +45,10 @@ class Scheduler:
                 if sensor.ShouldUpdate(now):
                     reading = sensor.Update(now)
 
-                    message_frames, n2k_msg = n2k.GenMessage(sensor, reading)
-                    decoded_message = n2k_msg
-                    self.SendData(message_frames, decoded_message)  
+                    encoded_message, decoded_message = n2k.GenMessage(sensor, reading)
+                    self.SendData(encoded_message)  
 
-                    if message_frames and self.log_queue:
+                    if encoded_message and self.log_queue:
                         entry = f"PGN {decoded_message.PGN}: {[(fld.id, fld.value) for fld in decoded_message.fields]}" # add to log
                         await self.log_queue.put(entry)
             
@@ -92,7 +94,7 @@ class Scheduler:
             self.uca = None
 
 
-    def SendData(self, frames, decoded):
+    def SendData(self, encoded):
 
         # ====================================================================== #
         # frames: list of 8-byte fast-packet chunks from NEMAMessage.GenMessage()
@@ -100,15 +102,20 @@ class Scheduler:
         # ====================================================================== #
             
         try:
-            if not frames or decoded is None or self.uca is None:
+            if encoded is None or self.uca is None:
                 return
             
             # Build 29 bit CAN ID: priority (3 bits), PGN (18 bits), source (8 bits)
-            can_id = ((decoded.priority & 0x7) << 26) | ((decoded.PGN & 0x3FFFF) << 8) | (decoded.source & 0xFF)
-            print(can_id, " : ", frames)
+            # can_id = ((decoded.priority & 0x7) << 26) | ((decoded.PGN & 0x3FFFF) << 8) | (decoded.source & 0xFF)
+            print(">> ", encoded)
+            
+            # encoded_str = json.dumps(encoded)
+            # encoded_bytes = encoded_str.encode('utf-8')
+
+            frames = [encoded] if isinstance(encoded, (bytes, bytearray)) else encoded
 
             for frame in frames:
-                self.uca.send_data_frame(can_id, frame)  # 29-bit ID → extended frame automatically
+                self.uca.frame_send(frame)  # 29-bit ID → extended frame automatically
 
         except Exception as e:
             print(f"Error sending message over CAN bus: {e}")
