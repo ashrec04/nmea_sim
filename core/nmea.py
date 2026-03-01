@@ -26,8 +26,8 @@ class NEMAMessage:
             print("ERROR: Sensor type", sensor.name, "is invalid")
             return []
         
-        frames = self.encoder._encode(msg)
-        return frames, msg
+        encoded = self.encoder.encode_usb(msg)
+        return encoded, msg
 
     def GetWaterDepthMsg(self, depth_m):
         try:
