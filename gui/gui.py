@@ -77,7 +77,7 @@ class MainWindow(QMainWindow):
             try:
                 self.ResetLogLabel()
                 self.sim_running = True
-                await self.scheduler.Run(duration_s=10)
+                await self.scheduler.Run()
                 
             except Exception as e:
                 self.sim_running = False
