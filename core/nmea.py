@@ -21,7 +21,7 @@ class NEMAMessage:
         elif sensor.name == "anemometer":
             msg = self.GetAnemometerMsg(reading)
         elif sensor.name == "vessel speed":
-            msg = self.GetVesselSpeedMsg(reading)
+            msg = self.GetVesselSpeedMsg(reading[0])
         else:
             print("ERROR: Sensor type", sensor.name, "is invalid")
             return []
@@ -55,8 +55,6 @@ class NEMAMessage:
                     )
                 ]
             )
-
-            # msg_bytes = self.encoder.encode_ebyte(message)
 
         except Exception as e: 
             print("ERROR IN MESSAGE: ", e)
@@ -93,8 +91,6 @@ class NEMAMessage:
                 ]
             )
 
-            # msg_bytes = self.encoder.encode_ebyte(message)
-
         except Exception as e: 
             print("ERROR IN MESSAGE: ", e)
         
@@ -127,7 +123,7 @@ class NEMAMessage:
                     ),
                     NMEA2000Field(
                         id="sog",
-                        raw_value=sog,
+                        value=sog,
                     ),
                     NMEA2000Field(
                         id="reserved_48",
@@ -135,8 +131,6 @@ class NEMAMessage:
                     )
                     ]
                 )
-
-            # msg_bytes = self.encoder.encode_ebyte(message)
 
         except Exception as e: 
             print("ERROR IN MESSAGE: ", e)
