@@ -131,7 +131,6 @@ class UsbCanAdapter:
         if not self.serial_device.is_open:
             raise SerialPortError("Serial port is not open.")
         frame_len = len(frame)
-        self.print_traffic = True ##DEBUG TODO REMOVE
         if self.print_traffic:
             print(">>> ", end="")
             print(" ".join(f"{byte:02x}" for byte in frame))

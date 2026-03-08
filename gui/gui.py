@@ -1,6 +1,7 @@
 import asyncio
 import json
 import ctypes
+from collections import deque
 from qasync import asyncSlot
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QMainWindow, QLabel, QScrollArea
@@ -44,6 +45,7 @@ class MainWindow(QMainWindow):
         # log label lives inside the scroll area
         self.log_label: QLabel = self.findChild(QLabel, "logLabel")
         self.log_label.setText("")  # start empty
+        self.log_entries = deque(maxlen=150)  # keep only the most recent 150 logs
 
         self.mode_chosen = None
         self.sim_running = False
@@ -95,7 +97,8 @@ class MainWindow(QMainWindow):
     async def UpdateLogLabel(self):
         while True:
             message = await self.log_queue.get()
-            self.log_label.setText((self.log_label.text() + "\n" + message).strip())
+            self.log_entries.append(message)
+            self.log_label.setText("\n".join(self.log_entries))
             self.log_label.adjustSize()  # let label report its new height
             self.log_label.parent().adjustSize()  # keep scroll widget in sync
             
@@ -106,6 +109,7 @@ class MainWindow(QMainWindow):
             self.log_queue.task_done()
 
     def ResetLogLabel(self):
+        self.log_entries.clear()
         self.log_label.setText("")
 
     def UpdateErrorLabel(self, msg):
