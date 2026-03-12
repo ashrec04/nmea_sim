@@ -552,7 +552,7 @@
              <x>0</x>
              <y>0</y>
              <width>707</width>
-             <height>475</height>
+             <height>371</height>
             </rect>
            </property>
            <property name="sizePolicy">
@@ -686,17 +686,78 @@
          </widget>
         </item>
         <item>
-         <spacer name="horizontalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
+         <layout class="QVBoxLayout" name="bilgeLevelVerticalLayout">
+          <item>
+           <layout class="QHBoxLayout" name="bilgeLevelHorizontalLayout">
+            <item>
+             <widget class="QLabel" name="bilgeLabel">
+              <property name="font">
+               <font>
+                <family>Verdana</family>
+               </font>
+              </property>
+              <property name="text">
+               <string>Bilge Level:</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="levelPercentlabel">
+              <property name="text">
+               <string>0</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <widget class="QSlider" name="bilgeLevelSlider">
+            <property name="orientation">
+             <enum>Qt::Orientation::Horizontal</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="engineVerticalLayout">
+          <item>
+           <widget class="QLabel" name="engineLabel">
+            <property name="font">
+             <font>
+              <family>Verdana</family>
+             </font>
+            </property>
+            <property name="text">
+             <string>Engine:</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="engOnRadioButton">
+            <property name="font">
+             <font>
+              <family>Verdana</family>
+             </font>
+            </property>
+            <property name="text">
+             <string>On</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="engOffRadioButton">
+            <property name="font">
+             <font>
+              <family>Verdana</family>
+             </font>
+            </property>
+            <property name="text">
+             <string>Off</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <widget class="QLabel" name="errorLabel">
@@ -738,19 +799,6 @@
            <bool>true</bool>
           </property>
          </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Orientation::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>200</height>
-           </size>
-          </property>
-         </spacer>
         </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="2,0,2">

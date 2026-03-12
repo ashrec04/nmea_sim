@@ -8,6 +8,12 @@ from nmea2000.decoder import NMEA2000Decoder
 WATER_DEPTH_PGN = 128267
 WIND_DATA_PGN = 130306
 VESSEL_SPEED_PGN = 129026
+FLUID_LEVEL_PGN = 127505
+ENGINE_PARAMS_PGN = 127488
+
+BILGE_TANK_CAPACITY_L = 15  # arbitrary capacity for bilge tank
+FLUID_TYPE_WATER = 1         # TANK_TYPE value for water
+
 
 class NEMAMessage:
     def __init__ (self):
@@ -22,6 +28,10 @@ class NEMAMessage:
             msg = self.GetAnemometerMsg(reading)
         elif sensor.name == "vessel speed":
             msg = self.GetVesselSpeedMsg(reading[0])
+        elif sensor.name == "bilge level":
+            msg = self.GetFluidLevelMsg(reading[0])
+        elif sensor.name == "engine diagnostics":
+            msg = self.GetEngineDiagnosticMsg(reading[0])
         else:
             print("ERROR: Sensor type", sensor.name, "is invalid")
             return []
@@ -137,6 +147,86 @@ class NEMAMessage:
 
         return message
      
+    def GetFluidLevelMsg(self, level, instance=0):
+        # Data to encode: Fluid Level (PGN 127505) for bilge water level
+        try:
+            message = NMEA2000Message(
+                PGN=FLUID_LEVEL_PGN,
+                priority=2,
+                source=1,
+                destination=255,
+                fields=[
+                    NMEA2000Field(
+                        id="instance",
+                        value=instance,
+                    ),
+                    NMEA2000Field(
+                        id="type",
+                        raw_value=FLUID_TYPE_WATER,
+                    ),
+                    NMEA2000Field(
+                        id="level",
+                        value=level,
+                    ),
+                    NMEA2000Field(
+                        id="capacity",
+                        value=BILGE_TANK_CAPACITY_L,
+                    ),
+                    NMEA2000Field(
+                        id="reserved_56",
+                        raw_value=0,
+                    )
+                    ]
+                )
+
+        except Exception as e: 
+            print("ERROR IN MESSAGE: ", e)
+            message = None
+
+        return message
+
+    def GetEngineDiagnosticMsg(self, rpm, instance=0, pressure = 1000, trim = 0):
+        # Data to encode: Engine Diagnostics (PGN 127488) only thing being change is the rpm
+        # in gui:
+        # when engine off: rpm = 0
+        # when engine On: rpm = 12000
+        try:
+            message = NMEA2000Message(
+                PGN=ENGINE_PARAMS_PGN,
+                priority=2,
+                source=1,
+                destination=255,
+                fields=[
+                    NMEA2000Field(
+                        id="instance",
+                        value=0,
+                    ),
+                    NMEA2000Field(
+                        id="speed",
+                        raw_value=rpm,
+                    ),
+                    NMEA2000Field(
+                        id="pressure",
+                        value=pressure,
+                    ),
+                    NMEA2000Field(
+                        id="trim",
+                        value=trim,
+                    ),
+                    NMEA2000Field(
+                        id="reserved_56",
+                        raw_value=0,
+                    )
+                    ]
+                )
+
+        except Exception as e: 
+            print("ERROR IN MESSAGE: ", e)
+            message = None
+
+        return message
+
+
     def DecodeMessage(self, msg_bytes):
         # Decode the message
         decoded = None

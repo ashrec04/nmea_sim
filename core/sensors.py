@@ -44,6 +44,7 @@ class DepthSensor(SensorBase):
 
         return [round((self.mean_depth + self.variation * np.sin(now) + np.sin(now*np.random.randint(low=-2, high=2))), 1)]
 
+
 class Anemometer(SensorBase):
     def __init__(self, config):
         super().__init__("anemometer", config["refresh_rate_hz"])
@@ -59,6 +60,7 @@ class Anemometer(SensorBase):
             round(self.mean_direction + self.direction_variation * np.sin(now) + np.sin(now*np.random.randint(low=-5, high=5)))
             ]
 
+
 class VesselSpeed(SensorBase):
     def __init__(self, config):
         super().__init__("vessel speed", config["refresh_rate_hz"])
@@ -68,3 +70,34 @@ class VesselSpeed(SensorBase):
     def Update(self, now):
         self.last_update = now
         return [round(self.mean_speed + self.speed_variation * np.sin(now) + np.sin(now*np.random.randint(low=-5, high=5)), 1)]
+
+
+class BilgeStatus(SensorBase):
+    def __init__(self, level_provider, refresh_rate_hz = 0.1):
+        super().__init__("bilge level", refresh_rate_hz=refresh_rate_hz)
+        self.level_provider = level_provider # get level from gui
+
+    def Update(self, now):
+        self.last_update = now
+        try:
+            raw_level = self.level_provider() if callable(self.level_provider) else self.level_provider
+        except Exception:
+            raw_level = 0
+        
+        level_percent = max(0, min(100, int(raw_level))) # clamp to 0-100%
+        return [level_percent]
+    
+class EngineStatus(SensorBase):
+    def __init__(self, rpm, refresh_rate_hz = 0.1):
+        super().__init__("bilge level", refresh_rate_hz=refresh_rate_hz)
+        self.rpm = rpm # get rpm from gui
+
+    def Update(self, now):
+        self.last_update = now
+        try:
+            raw_level = self.rpm() if callable(self.rpm) else self.rpm
+        except Exception:
+            raw_level = 0
+        
+        level_percent = max(0, min(100, int(raw_level))) # clamp to 0-100%
+        return [level_percent]

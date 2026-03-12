@@ -4,10 +4,10 @@ import ctypes
 from collections import deque
 from qasync import asyncSlot
 from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QMainWindow, QLabel, QScrollArea
+from PyQt6.QtWidgets import QMainWindow, QLabel, QScrollArea, QButtonGroup
 from PyQt6 import uic
 
-from core.sensors import DepthSensor, Anemometer, VesselSpeed
+from core.sensors import DepthSensor, Anemometer, VesselSpeed, BilgeStatus, EngineStatus
 from core.scheduler import Scheduler
 
 '''GUI System 
@@ -42,10 +42,34 @@ class MainWindow(QMainWindow):
         self.startButton.clicked.connect(self.PlayButtonClicked)     # start
         self.stopButton.clicked.connect(self.StopButtonClicked)   # stop
 
+
+        # bilge level slider to label and save value
+        self.bilge_level = 0
+        self.bilgeLevelSlider.setRange(0, 100)
+        self.bilgeLevelSlider.setValue(self.bilge_level)
+        self.levelPercentlabel.setText(f"{self.bilge_level}%")
+        self.bilgeLevelSlider.valueChanged.connect(self.OnBilgeLevelChanged)
+
+
+        # on/off engine radio button grouping
+        self.engine_status = 1200 # on = 1200 off = 0 (rpm)
+        self.engine_stat_changed_callback = None
+
+        self.engine_group = QButtonGroup(self)
+        self.engine_group.setExclusive(True)
+        self.engine_group.addButton(self.engOnRadioButton)
+        self.engine_group.addButton(self.engOffRadioButton)
+
+        self.engOnRadioButton.toggled.connect(self.UpdateEngineStatus)
+        self.engOnRadioButton.setChecked(self.engine_status)
+        self.engOffRadioButton.setChecked(not self.engine_status)
+
+
         # log label lives inside the scroll area
         self.log_label: QLabel = self.findChild(QLabel, "logLabel")
         self.log_label.setText("")  # start empty
         self.log_entries = deque(maxlen=150)  # keep only the most recent 150 logs
+
 
         self.mode_chosen = None
         self.sim_running = False
@@ -54,8 +78,10 @@ class MainWindow(QMainWindow):
         self.loop.create_task(self.UpdateLogLabel())
         self.scheduler = None
 
+
     def ModeChosen(self, m):
         self.mode_chosen = m.text()
+
 
     @asyncSlot()
     async def PlayButtonClicked(self):
@@ -72,7 +98,9 @@ class MainWindow(QMainWindow):
             sensors = [
                 DepthSensor(config["sensors"]["depth"]),
                 Anemometer(config["sensors"]["anemometer"]),
-                VesselSpeed(config["sensors"]["vessel speed"])
+                VesselSpeed(config["sensors"]["vessel speed"]),
+                BilgeStatus(lambda: self.bilge_level),
+                EngineStatus(lambda: self.engine_status)
             ]
 
             self.scheduler = Scheduler(config["tick_rate_hz"], sensors, self.loop, self.log_queue)
@@ -114,6 +142,24 @@ class MainWindow(QMainWindow):
 
     def UpdateErrorLabel(self, msg):
         self.errorLabel.setText(msg)
+
+    def OnBilgeLevelChanged(self, value: int):
+        # update output message
+        self.bilge_level = value
+        self.levelPercentlabel.setText(f"{value}%")
+
+
+    def UpdateEngineStatus(self, checked):
+        if checked:
+            self.engine_status = 1200
+        elif self.engOffRadioButton.isChecked():
+            self.engine_status = 0
+
+        if self.engine_stat_changed_callback is not None:
+            self.engine_stat_changed_callback(self.engine_status)
+
+        print(f"daytime = {self.engine_status}")
+
 
 def LoadConditions(mode):
     path = "condition_modes/" + mode + ".json"
