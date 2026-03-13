@@ -89,7 +89,7 @@ class BilgeStatus(SensorBase):
     
 class EngineStatus(SensorBase):
     def __init__(self, rpm, refresh_rate_hz = 0.1):
-        super().__init__("bilge level", refresh_rate_hz=refresh_rate_hz)
+        super().__init__("engine diagnostics", refresh_rate_hz=refresh_rate_hz)
         self.rpm = rpm # get rpm from gui
 
     def Update(self, now):

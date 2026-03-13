@@ -206,15 +206,15 @@ class NEMAMessage:
                         raw_value=rpm,
                     ),
                     NMEA2000Field(
-                        id="pressure",
+                        id="boostPressure",
                         value=pressure,
                     ),
                     NMEA2000Field(
-                        id="trim",
+                        id="tiltTrim",
                         value=trim,
                     ),
                     NMEA2000Field(
-                        id="reserved_56",
+                        id="reserved_48",
                         raw_value=0,
                     )
                     ]
