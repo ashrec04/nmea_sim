@@ -203,7 +203,7 @@ class NEMAMessage:
                     ),
                     NMEA2000Field(
                         id="speed",
-                        raw_value=rpm,
+                        value=rpm,
                     ),
                     NMEA2000Field(
                         id="boostPressure",

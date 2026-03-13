@@ -86,7 +86,8 @@ class BilgeStatus(SensorBase):
         
         level_percent = max(0, min(100, int(raw_level))) # clamp to 0-100%
         return [level_percent]
-    
+
+
 class EngineStatus(SensorBase):
     def __init__(self, rpm, refresh_rate_hz = 0.1):
         super().__init__("engine diagnostics", refresh_rate_hz=refresh_rate_hz)
@@ -98,6 +99,5 @@ class EngineStatus(SensorBase):
             raw_level = self.rpm() if callable(self.rpm) else self.rpm
         except Exception:
             raw_level = 0
-        
-        level_percent = max(0, min(100, int(raw_level))) # clamp to 0-100%
-        return [level_percent]
+
+        return [raw_level]

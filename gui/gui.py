@@ -158,7 +158,7 @@ class MainWindow(QMainWindow):
         if self.engine_stat_changed_callback is not None:
             self.engine_stat_changed_callback(self.engine_status)
 
-        print(f"daytime = {self.engine_status}")
+        print(f"eng = {self.engine_status}")
 
 
 def LoadConditions(mode):
