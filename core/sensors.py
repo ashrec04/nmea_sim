@@ -69,7 +69,10 @@ class VesselSpeed(SensorBase):
 
     def Update(self, now):
         self.last_update = now
-        return [round(self.mean_speed + self.speed_variation * np.sin(now) + np.sin(now*np.random.randint(low=-5, high=5)), 1)]
+        if self.mean_speed != 0: # allows anchored condition to work (no negative numbers passed)
+            return [round(self.mean_speed + self.speed_variation * np.sin(now) + np.sin(now*np.random.randint(low=-5, high=5)), 1)]
+        else:
+            return [np.float64(self.mean_speed)]
 
 
 class BilgeStatus(SensorBase):

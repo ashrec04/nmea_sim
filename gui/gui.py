@@ -111,7 +111,7 @@ class MainWindow(QMainWindow):
                 
             except Exception as e:
                 self.sim_running = False
-                self.UpdateErrorLabel("ERROR: scheduler has encountered an issue\n:", e)
+                self.UpdateErrorLabel(f"ERROR: scheduler has encountered an issue\n:{e}")
             
     @asyncSlot()
     async def StopButtonClicked(self):
@@ -157,8 +157,6 @@ class MainWindow(QMainWindow):
 
         if self.engine_stat_changed_callback is not None:
             self.engine_stat_changed_callback(self.engine_status)
-
-        print(f"eng = {self.engine_status}")
 
 
 def LoadConditions(mode):
