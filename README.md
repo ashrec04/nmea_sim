@@ -6,7 +6,7 @@ NMEA2000 message simulator interacted with using a GUI which generates random da
 - Bilge Information
 - Engine Information
 
-Data is sent via 20 Byte NEMA2000 messages across a [Waveshare USB-CAN-A Bus](https://www.waveshare.com/wiki/USB-CAN-A)
+Data is sent via 20 Byte NEMA2000 messages across a
 
 ## Libraries Used
 ```
@@ -20,13 +20,11 @@ time
 ```
 
 ## Code Used
-[usb_can_adapter_v1](https://github.com/RajithaRanasinghe/Python-Class-for-Waveshare-USB-CAN-A/tree/main) is used as a foundation to add a new function which enables the transfer of fast packets
+[Waveshare USB-CAN-A Demo](https://www.waveshare.com/wiki/USB-CAN-A#Demo_Test) is used as a foundation to add a new function which enables the transfer of 20 Byte NEMA2000 messages
 
 ## File Structure
 ```  
 nmea_sim
-├───.gitattributes
-├───.gitignore
 ├───main.py
 ├───README.md
 ├───condition_modes
