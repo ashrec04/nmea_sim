@@ -1,17 +1,22 @@
 # NMEA2000 Sensor Simulation Program 
-NMEA2000 message simulator with GUI using Python 3.14 which generates random data for three simulated sensors (Water Depth, Ananometer and Vessel Speed)
+NMEA2000 message simulator interacted with using a GUI which generates random data for the following simulated sensors and diganostics:
+- Water Depth
+- Anemometer
+- Vessel Speed
+- Bilge Information
+- Engine Information
 
-Data is sent via "fast packet" NEMA2000 messages across a [Waveshare USB-CAN-A Bus](https://www.waveshare.com/wiki/USB-CAN-A) plugged into USB Port COM3
+Data is sent via 20 Byte NEMA2000 messages across a [Waveshare USB-CAN-A Bus](https://www.waveshare.com/wiki/USB-CAN-A)
 
 ## Libraries Used
 ```
-numpy
+nmea2000
+PyQt6
+qasync
 asyncio
 json
+numpy
 time
-PyQt6
-nmea2000
-qasync
 ```
 
 ## Code Used
@@ -25,8 +30,12 @@ nmea_sim
 ├───main.py
 ├───README.md
 ├───condition_modes
-│   ├──calm.json
-│   └──mild.json
+│   ├───anchored.json
+│   ├───breezy.json
+│   ├───calm.json
+│   ├───gale.json
+│   ├───gentle.json
+│   └───storm.json
 ├───core
 │   ├───nmea.py
 │   ├───scheduler.py
