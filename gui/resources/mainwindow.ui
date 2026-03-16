@@ -497,6 +497,11 @@
     </disabled>
    </palette>
   </property>
+  <property name="font">
+   <font>
+    <family>Verdana</family>
+   </font>
+  </property>
   <property name="windowTitle">
    <string notr="true">MainWindow</string>
   </property>
@@ -552,7 +557,7 @@
              <x>0</x>
              <y>0</y>
              <width>707</width>
-             <height>371</height>
+             <height>375</height>
             </rect>
            </property>
            <property name="sizePolicy">
@@ -684,6 +689,16 @@
            </font>
           </property>
          </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="checkboxTitleLabel">
+          <property name="text">
+           <string>Messages to Enable:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QVBoxLayout" name="checkboxVerticalLayout"/>
         </item>
         <item>
          <layout class="QVBoxLayout" name="bilgeLevelVerticalLayout">
@@ -855,7 +870,7 @@
      <x>0</x>
      <y>0</y>
      <width>1000</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
   </widget>

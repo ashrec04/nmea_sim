@@ -4,7 +4,7 @@ import ctypes
 from collections import deque
 from qasync import asyncSlot
 from PyQt6.QtGui import QIcon
-from PyQt6.QtWidgets import QMainWindow, QLabel, QScrollArea, QButtonGroup
+from PyQt6.QtWidgets import QMainWindow, QLabel, QScrollArea, QButtonGroup, QCheckBox
 from PyQt6 import uic
 
 from core.sensors import DepthSensor, Anemometer, VesselSpeed, BilgeStatus, EngineStatus
@@ -19,12 +19,17 @@ from core.scheduler import Scheduler
 APPLICATION_NAME = "NMEA 2000 Sim"
 ICON_PATH = 'gui/resources/icon.ico'
 WINDOW_PATH = 'gui/resources/mainwindow.ui'
+
 #~~
 
 # Subclass QMainWindow to customise the window
 class MainWindow(QMainWindow):
 
     def __init__(self, condition_list, loop=None):
+
+        self.sensor_names = ["Depth", "Anemometer", "Speed Over Ground", "Bilge Diagnostics", "Engine Diagnostics"]
+        self.sensor_checkboxes = {}
+
         super().__init__()
 
         uic.loadUi(WINDOW_PATH, self)   # loads window as defined in mainwindow.ui
@@ -70,6 +75,15 @@ class MainWindow(QMainWindow):
         self.log_label.setText("")  # start empty
         self.log_entries = deque(maxlen=150)  # keep only the most recent 150 logs
 
+        
+        # set up sensor config checkboxes
+        for name in self.sensor_names:
+            checkbox = QCheckBox(name)
+            checkbox.setChecked(True)
+            self.checkboxVerticalLayout.addWidget(checkbox)
+            self.sensor_checkboxes[name] = checkbox
+
+
 
         self.mode_chosen = None
         self.sim_running = False
@@ -77,7 +91,6 @@ class MainWindow(QMainWindow):
         self.log_queue = asyncio.Queue()
         self.loop.create_task(self.UpdateLogLabel())
         self.scheduler = None
-
 
     def ModeChosen(self, m):
         self.mode_chosen = m.text()
@@ -94,14 +107,25 @@ class MainWindow(QMainWindow):
             except:
                 self.UpdateErrorLabel("Start Invalid:\n\nYou must choose a condition\nto start the simulation")
 
+
+            # "Depth", "Anemometer", "Speed Over Ground", "Bilge Diagnostics", "Engine Diagnostics"
+            sensors = []
+            if self.sensor_checkboxes["Depth"].isChecked():
+                sensors.append(DepthSensor(config["sensors"]["depth"]))
+
+            if self.sensor_checkboxes["Anemometer"].isChecked():
+                sensors.append(Anemometer(config["sensors"]["anemometer"]))
+
+            if self.sensor_checkboxes["Speed Over Ground"].isChecked():
+                sensors.append(VesselSpeed(config["sensors"]["vessel speed"]))
             
-            sensors = [
-                DepthSensor(config["sensors"]["depth"]),
-                Anemometer(config["sensors"]["anemometer"]),
-                VesselSpeed(config["sensors"]["vessel speed"]),
-                BilgeStatus(lambda: self.bilge_level),
-                EngineStatus(lambda: self.engine_status)
-            ]
+            if self.sensor_checkboxes["Bilge Diagnostics"].isChecked():
+                sensors.append(BilgeStatus(lambda: self.bilge_level))
+
+            if self.sensor_checkboxes["Engine Diagnostics"].isChecked():
+                sensors.append(EngineStatus(lambda: self.engine_status))
+                
+            print(f"sensors selected {sensors}")
 
             self.scheduler = Scheduler(config["tick_rate_hz"], sensors, self.loop, self.log_queue)
             try:
@@ -147,7 +171,6 @@ class MainWindow(QMainWindow):
         # update output message
         self.bilge_level = value
         self.levelPercentlabel.setText(f"{value}%")
-
 
     def UpdateEngineStatus(self, checked):
         if checked:
