@@ -20,7 +20,7 @@ time
 ```
 
 ## Code Used
-[Waveshare USB-CAN-A Demo](https://www.waveshare.com/wiki/USB-CAN-A#Demo_Test) is used as a foundation to add a new function which enables the transfer of 20 Byte NEMA2000 messages
+[Python-Class-for-Waveshare-USB-CAN-A by RajithaRanasinghe](https://github.com/RajithaRanasinghe/Python-Class-for-Waveshare-USB-CAN-A/tree/main) is used as a foundation to add a new function which enables the transfer of 20 Byte NEMA2000 messages
 
 ## File Structure
 ```  
